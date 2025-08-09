@@ -1,0 +1,75 @@
+name: inception
+
+volumes:
+  wp-db:
+    #driver: local
+    #driver_opts:
+    #  type: none
+    #  device: /home/mmoussou/data/wp-db
+    #  o: bind
+  wp-site:
+    #driver: local
+    #driver_opts:
+    #  type: none
+    #  device: /home/mmoussou/data/wp-site
+    #  o: bind
+  nginx-certs:
+    #driver: local
+    #driver_opts:
+    #  type: none
+    #  device: /home/adjoly/data/certs
+    #  o: bind
+
+networks:
+  inception:
+    external: false
+
+services:
+  db:
+    container_name: inception-db
+    build:
+      context: .
+      dockerfile: mariadb/Dockerfile
+    networks:
+      - inception
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_DATABASE=${DB_NAME}
+    volumes:
+      - wp-db:/var/lib/mysql
+    restart: unless-stopped
+
+  wordpress-php:
+    container_name: inception-wordpress-php
+    build:
+      context: .
+      dockerfile: wordpress/Dockerfile
+    networks:
+      - inception
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - WP_DB_NAME=${DB_NAME}
+      - WP_DB_USER=${DB_USER}
+      - WP_DB_PASS=${DB_PASS}
+      - WP_DB_HOST=db
+      - WP_ADMIN_EMAIL=${WP_MAIL}
+      - WP_ADMIN_USER=${WP_ADMIN}
+      - WP_USER=${WP_USER}
+      - WP_USER_EMAIL=${WP_USER_MAIL}
+      - WP_USER_ROLE=editor
+      - WP_USER_PASS_FILE=${WP_USER_PASS}
+      - WP_ADMIN_PASS_FILE=${WP_ADMIN_PASS}
+      - WP_URL=mmoussou.42.fr
+      - WP_TITLE=an amazing very cool really nice title for wordpress
+      - WP_SEARCH_ENGINE_VISIBILITY=false
+      - PHP_MEMORY_LIMIT="512M"
+      - PHP_MAX_UPLOAD="50M"
+      - PHP_PORT=9000
+    volumes:
+      - wp-site:/var/www/wordpress
+      - ./configs/wordpress/entry:/docker-entrypoint.d
+    restart: unless-stopped
