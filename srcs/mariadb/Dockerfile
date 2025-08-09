@@ -15,7 +15,7 @@ RUN			chown -R mysql:mysql /var/lib/mysql /run/mariadb /run/mysqld
 
 ENV			LANG=C.UTF-8
 
-#COPY		--chmod=0644 mariadb/configs/mariadb/docker.cnf /etc/my.cnf.d/mariadb-server.cnf.d
+COPY		--chmod=0644 mariadb/conf/docker.cnf /etc/my.cnf.d/mariadb-server.cnf
 
 VOLUME		/var/lib/mysql
 
@@ -23,4 +23,4 @@ ENTRYPOINT	[ "/entrypoint.sh" ]
 WORKDIR		/var/lib/mysql
 
 EXPOSE		3306
-CMD			[ "mariadbd", "--user=mysql" ]
+CMD			[ "mariadbd", "--user=mysql", "--skip-networking=0" ]

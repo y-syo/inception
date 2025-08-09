@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -n $DATADIR ]
+if [ -z $DATADIR ]
 then
 	DATADIR="/var/lib/mysql"
 fi
@@ -11,28 +11,31 @@ if [ -z "$( ls -A $DATADIR )" ]
 then
 	mariadb-install-db --user=mysql --ldata=$DATADIR
 
-	if [ -n $MYSQL_ROOT_PASSWORD ]
+	if [ -z $DB_ROOT_PASSWORD ]
 	then
-		MYSQL_ROOT_PASSWORD="default"
+		DB_ROOT_PASSWORD="default"
 	fi
 
-	if [ -n $MYSQL_PASSWORD ]
+	if [ -z $DB_PASSWORD ]
 	then
-		MYSQL_PASSWORD="default"
+		DB_PASSWORD="default"
 	fi
 
-	if [ -n $MYSQL_USER ]
+	if [ -z $DB_USER ]
 	then
-		MYSQL_USER="mariadb"
+		DB_USER="mariadb"
 	fi
 
-	if [ -n $MYSQL_DATABASE ]
+	if [ -z $DB_DATABASE ]
 	then
-		MYSQL_DATABASE="default"
+		DB_DATABASE="default"
 	fi
 
-# envsubst to init.sql to put env in it
-mariadb --user=root -e $(envsubst < /init.sql)
+	# envsubst to init.sql to put env in it
+	envsubst < /init.sql > /etc/mysql/init.sql
 fi
+
+sed -i "s|.*skip-networking.*|skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf
+sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
 
 exec $@

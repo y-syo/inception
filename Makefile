@@ -12,6 +12,7 @@ fclean: clean
 	docker system prune -af
 	docker volume prune -af
 
-re: fclean all
+re: fclean
+	@$(MAKE) all
 
 .PHONY: all stop clean fclean re

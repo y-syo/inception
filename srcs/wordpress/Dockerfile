@@ -4,30 +4,27 @@ ADD			alpine/alpine-minirootfs-3.21.2-x86_64.tar.gz /
 LABEL		version="0.1"
 LABEL		maintainer="y-syo"
 
-COPY		wordpress/scripts/entrypoint /docker-entrypoint
-COPY		wordpress/scripts/getFileEnv /bin/getFileEnv
+COPY		wordpress/scripts/entrypoint.sh /entrypoint.sh
 COPY		wordpress/www-docker.conf /www-docker.conf
 
 RUN			set -x
 RUN			adduser -u 82 -D -S -G www-data www-data
-RUN			apk add --no-cache curl tzdata fcgi
+RUN			apk add --no-cache curl tzdata fcgi \
 				php84-phar php84-xml php84-curl php84-zip \
 				php84-intl php84-mbstring php84-iconv \
 				php84 php84-mysqli php84-fpm php84-json \
 				php84-zlib php84-session php84-dom \
 				php84-xmlreader php84-pdo php84-gd \
-				php84-opcache php84-ctype php84-tokenizer
+				php84-opcache php84-ctype php84-tokenizer mariadb-client
 RUN			curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN			chmod +x wp-cli.phar
 RUN			mv wp-cli.phar /usr/local/bin/wp
-RUN			chmod +x /docker-entrypoint
+RUN			chmod +x /entrypoint.sh
 RUN			rm -Rf /build
-RUN			mkdir /docker-entrypoint.d
 
 RUN			cp /usr/bin/php84 /usr/bin/php
 
 VOLUME		/var/www/wordpress
-VOLUME		/docker-entrypoint.d
 
 WORKDIR		/var/www
 
@@ -46,7 +43,7 @@ RUN			version='6.7.2' \
 			&& chown -R www-data:www-data /var/www/wordpress/wp-content \
 			&& chmod -R 1777 /var/www/wordpress/wp-content
 
-ENTRYPOINT	[ "/docker-entrypoint" ]
+ENTRYPOINT	[ "/entrypoint.sh" ]
 WORKDIR		/var/www/wordpress
 STOPSIGNAL	SIGQUIT
 

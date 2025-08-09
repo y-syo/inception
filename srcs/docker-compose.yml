@@ -33,10 +33,10 @@ services:
     networks:
       - inception
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_DATABASE=${DB_NAME}
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASS}
+      - DB_PASSWORD=${DB_PASS}
+      - DB_USER=${DB_USER}
+      - DB_DATABASE=${DB_NAME}
     volumes:
       - wp-db:/var/lib/mysql
     restart: unless-stopped
@@ -50,7 +50,7 @@ services:
       - inception
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_started
     environment:
       - WP_DB_NAME=${DB_NAME}
       - WP_DB_USER=${DB_USER}
@@ -71,5 +71,4 @@ services:
       - PHP_PORT=9000
     volumes:
       - wp-site:/var/www/wordpress
-      - ./configs/wordpress/entry:/docker-entrypoint.d
     restart: unless-stopped
