@@ -2,23 +2,23 @@ name: inception
 
 volumes:
   wp-db:
-    #driver: local
-    #driver_opts:
-    #  type: none
-    #  device: /home/mmoussou/data/wp-db
-    #  o: bind
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/mmoussou/data/wp-db
+      o: bind
   wp-site:
-    #driver: local
-    #driver_opts:
-    #  type: none
-    #  device: /home/mmoussou/data/wp-site
-    #  o: bind
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/mmoussou/data/wp-site
+      o: bind
   nginx-certs:
-    #driver: local
-    #driver_opts:
-    #  type: none
-    #  device: /home/adjoly/data/certs
-    #  o: bind
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/adjoly/data/certs
+      o: bind
 
 networks:
   inception:
@@ -93,7 +93,6 @@ services:
       - wp-site:/var/www/wordpress
       - nginx-certs:/etc/nginx/ssl
     ports:
-      #- "443:443"
-      - "7272:443"
+      - "443:443"
     restart: unless-stopped
 

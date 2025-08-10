@@ -5,7 +5,6 @@ LABEL		version="0.1"
 LABEL		maintainer="y-syo"
 
 COPY		wordpress/scripts/entrypoint.sh /entrypoint.sh
-COPY		wordpress/www-docker.conf /www-docker.conf
 
 RUN			set -x
 RUN			adduser -u 82 -D -S -G www-data www-data
@@ -22,6 +21,7 @@ RUN			mv wp-cli.phar /usr/local/bin/wp
 RUN			chmod +x /entrypoint.sh
 RUN			rm -Rf /build
 
+COPY		wordpress/www-docker.conf /etc/php84/php-fpm.d/www.conf
 RUN			cp /usr/bin/php84 /usr/bin/php
 
 VOLUME		/var/www/wordpress
