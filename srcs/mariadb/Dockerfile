@@ -24,3 +24,4 @@ WORKDIR		/var/lib/mysql
 
 EXPOSE		3306
 CMD			[ "mariadbd", "--user=mysql", "--skip-networking=0" ]
+HEALTHCHECK	--interval=30s --timeout=10s --retries=3 --start-period=60s --start-interval=5s  CMD mariadb -u$DB_USER -hlocalhost -e "SELECT 1;" || exit 1

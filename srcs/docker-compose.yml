@@ -50,7 +50,7 @@ services:
       - inception
     depends_on:
       db:
-        condition: service_started
+        condition: service_healthy
     environment:
       - WP_DB_NAME=${DB_NAME}
       - WP_DB_USER=${DB_USER}
@@ -72,3 +72,28 @@ services:
     volumes:
       - wp-site:/var/www/wordpress
     restart: unless-stopped
+
+  nginx:
+    container_name: inception-nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    networks:
+      - inception
+    environment:
+      - NGINX_PHP_HOST=inception-wordpress-php
+      - NGINX_SSL_KEY_FILE=/etc/nginx/ssl/mmoussou-wp.key
+      - NGINX_SSL_CERT_FILE=/etc/nginx/ssl/mmoussou-wp.crt
+    depends_on:
+      wordpress-php:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    volumes:
+      - wp-site:/var/www/wordpress
+      - nginx-certs:/etc/nginx/ssl
+    ports:
+      #- "443:443"
+      - "7272:443"
+    restart: unless-stopped
+
