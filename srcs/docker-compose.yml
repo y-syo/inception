@@ -17,7 +17,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/adjoly/data/certs
+      device: /home/mmoussou/data/certs
       o: bind
 
 networks:
@@ -61,8 +61,8 @@ services:
       - WP_USER=${WP_USER}
       - WP_USER_EMAIL=${WP_USER_MAIL}
       - WP_USER_ROLE=editor
-      - WP_USER_PASS_FILE=${WP_USER_PASS}
-      - WP_ADMIN_PASS_FILE=${WP_ADMIN_PASS}
+      - WP_USER_PASS=${WP_USER_PASS}
+      - WP_ADMIN_PASS=${WP_ADMIN_PASS}
       - WP_URL=mmoussou.42.fr
       - WP_TITLE=an amazing very cool really nice title for wordpress
       - WP_SEARCH_ENGINE_VISIBILITY=false

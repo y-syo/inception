@@ -83,6 +83,10 @@
     };
   };
 
+  networking.extraHosts = ''
+  127.0.0.1 mmoussou.42.fr
+  '';
+
   programs = {
     zsh = {
       autosuggestions.enable = true;
@@ -100,6 +104,7 @@
       git
       unzip
       neovim
+	  gnumake
     ];
   };
 
